@@ -1,12 +1,23 @@
-# 🪙 CurrencyFormatter.js
+# 💰 CurrencyFormatter.js  
+**by Syan Dev Studio**
 
-> Lightweight, dependency-free JavaScript library for flexible currency formatting.  
-> Supports prefix/suffix patterns (e.g. `Rp|#.###,##`), locale auto-detection, and negative styles.
+> Lightweight, zero-dependency currency formatter for JavaScript.  
+> Supports custom patterns (e.g. `Rp|#.###,##`), locale auto-detection, and negative styles.
 
 ---
 
-## 🚀 Installation
+## ⚙️ Features
 
-### NPM
+- 🪙 Prefix/suffix pattern: `Rp|#.###,##` or `#,###.##|USD`
+- 🌍 Auto locale detection (`id-ID`, `en-US`, `ja-JP`, etc.)
+- ➕ Negative formatting (`-` or `( )`)
+- ⚡ Supports both Browser (CDN) and ES Modules (React/Vite)
+- 🧩 Written and maintained by **Syan Dev Studio**
+
+---
+
+## 📦 Installation
+
+### 🧱 NPM
 ```bash
-npm install currency-formatter-js
+npm install @syandev/currency-formatter-js
