@@ -1,6 +1,6 @@
 /*!
  * CurrencyFormatter.js (Source ESM)
- * Author: ChatGPT
+ * Author: SyanDevStudio
  * License: MIT
  */
 
