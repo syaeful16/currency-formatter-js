@@ -33,7 +33,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/syandev-studio/currency-formatter-js.git"
+        "url": "https://github.com/syaeful16/currency-formatter-js.git"
     },
     "devDependencies": {
         "rollup": "^4.0.0",
