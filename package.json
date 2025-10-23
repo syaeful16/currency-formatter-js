@@ -1,6 +1,6 @@
 {
     "name": "@syandev/currency-formatter-js",
-    "version": "1.0.2",
+    "version": "1.0.1",
     "description": "Flexible currency formatter by Syan Dev Studio — supports patterns like Rp|#.###,## and auto locale detection.",
     "main": "dist/currencyFormatter.js",
     "module": "dist/currencyFormatter.mjs",
