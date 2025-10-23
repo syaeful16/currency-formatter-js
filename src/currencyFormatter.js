@@ -7,18 +7,38 @@
 const SYMBOL_MAP = {
     'id': 'Rp', 'en': '$', 'us': '$', 'ja': '¥', 'zh': '¥', 'kr': '₩', 'in': '₹', 'eu': '€', 'gb': '£'
 };
-  
+
+// Fungsi baru untuk menormalkan string angka
+function normalizeNumberString(str) {
+    let s = String(str).replace(/[^\d,.\-]/g, ''); // hapus karakter non-angka, titik, koma, minus
+
+    if (s.includes(',') && s.includes('.')) {
+        if (s.lastIndexOf(',') > s.lastIndexOf('.')) {
+            // Format Eropa: 1.000,50 → 1000.50
+            s = s.replace(/\./g, '').replace(',', '.');
+        } else {
+            // Format US: 1,000.50 → 1000.50
+            s = s.replace(/,/g, '');
+        }
+    } else if (s.includes(',')) {
+        // Jika hanya ada koma, anggap sebagai desimal
+        s = s.replace(',', '.');
+    }
+
+    return s;
+}
+
 function formatNumber(value, pattern, negativeStyle = '-') {
     if (value === null || value === undefined || value === '') value = 0;
-    let num = parseFloat(String(value).replace(/[^\d.\-]/g, '')) || 0;
-  
+    let num = parseFloat(normalizeNumberString(value)) || 0;
+
     const isNegative = num < 0;
     num = Math.abs(num);
-  
+
     let prefix = '';
     let suffix = '';
     let numberPattern = pattern || '#,###.##';
-  
+
     if (pattern.includes('|')) {
         const parts = pattern.split('|');
 
@@ -37,63 +57,63 @@ function formatNumber(value, pattern, negativeStyle = '-') {
             }
         }
     }
-  
+
     const useEuropean = numberPattern.indexOf('.') < numberPattern.indexOf(',') && numberPattern.indexOf(',') !== -1;
     const thousandSep = useEuropean ? '.' : ',';
     const decimalSep = useEuropean ? ',' : '.';
-  
+
     const decimalIndex = Math.max(numberPattern.lastIndexOf('.'), numberPattern.lastIndexOf(','));
     let decimalPlaces = 0;
     if (decimalIndex !== -1 && decimalIndex < numberPattern.length - 1) {
         const decimalPart = numberPattern.substring(decimalIndex + 1);
         decimalPlaces = decimalPart.replace(/[^#0]/g, '').length;
     }
-  
+
     const fixed = num.toFixed(decimalPlaces);
     const parts = fixed.split('.');
     let intPart = parts[0];
     const decPart = parts[1] || '';
-  
+
     const rgx = /(\d+)(\d{3})/;
     while (rgx.test(intPart)) {
-      intPart = intPart.replace(rgx, '$1' + thousandSep + '$2');
+        intPart = intPart.replace(rgx, '$1' + thousandSep + '$2');
     }
-  
+
     let formatted = intPart;
     if (decimalPlaces > 0 && decPart !== '') {
-      formatted += decimalSep + decPart;
+        formatted += decimalSep + decPart;
     }
-  
+
     let result = (prefix ? prefix + ' ' : '') + formatted + (suffix ? ' ' + suffix : '');
     if (isNegative) {
         if (negativeStyle === '()') result = '(' + result + ')';
         else result = '-' + result;
     }
-  
+
     return result;
 }
-  
+
 export default function CurrencyFormatter(defaultPattern = 'Rp|#.###,##', negativeStyle = '-') {
     function callable(value, patternOverride) {
         return callable.format(value, patternOverride);
     }
-  
+
     callable.pattern = defaultPattern;
     callable.negativeStyle = negativeStyle;
-  
+
     callable.setFormat = newPattern => {
         if (typeof newPattern === 'string' && newPattern.trim() !== '') callable.pattern = newPattern;
     };
-  
+
     callable.setNegativeStyle = style => {
         if (style === '-' || style === '()') callable.negativeStyle = style;
     };
-  
+
     callable.format = (value, patternOverride) => {
         const pattern = patternOverride || callable.pattern;
         return formatNumber(value, pattern, callable.negativeStyle);
     };
-  
+
     callable.auto = (value, locale = 'id-ID') => {
         const lang = locale.toLowerCase().split('-')[0];
         const symbol = SYMBOL_MAP[lang] || '$';
@@ -102,9 +122,8 @@ export default function CurrencyFormatter(defaultPattern = 'Rp|#.###,##', negati
 
         return formatNumber(value, pattern, callable.negativeStyle);
     };
-  
-    callable.parse = text => parseFloat(String(text).replace(/[^\d.\-]/g, '')) || 0;
-  
+
+    callable.parse = text => parseFloat(normalizeNumberString(text)) || 0;
+
     return callable;
 }
-  
